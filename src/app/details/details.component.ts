@@ -24,20 +24,38 @@ export class DetailsComponent {
   });
 
   constructor() {
+    const savedFormData = localStorage.getItem('formData');
+    if (savedFormData) {
+      // le asigno esos valores al formulario directamente
+      this.applyForm.setValue(JSON.parse(savedFormData));
+    }
     // almacena el numero de id de la ruta actual
-    const housingLocationId = parseInt(this.route.snapshot.params['id'], 10);
-    this.housingService.getHousingLocationById(housingLocationId).then((housingLocation) => {
-      this.housingLocation = housingLocation;
+    this.route.paramMap.subscribe(params => {
+      const housingLocationId = Number(params.get('id'));
+      this.housingService.getHousingLocationById(housingLocationId).then((housingLocation) => {
+        this.housingLocation = housingLocation;
+
+      });
     });
+    
   }
 
   submitApplication() {
+    localStorage.removeItem('formData');
     if (this.applyForm.valid) {
+      const formData = this.applyForm.value;
+
+      // Guardar los datos en LocalStorage
+      localStorage.setItem('formData', JSON.stringify(formData));
+
+      // Llamar al servicio (si aplica)
       this.housingService.submitApplication(
-        this.applyForm.value.firstName ?? '',
-        this.applyForm.value.lastName ?? '',
-        this.applyForm.value.email ?? '',
+        formData.firstName ?? '',
+        formData.lastName ?? '',
+        formData.email ?? ''
       );
+
+      alert('Se ha agregado el usuario');
     }
   }
 
