@@ -1,0 +1,102 @@
+export interface HousingLocation {
+  id: number;
+  name: string;
+  city: string;
+  state: string;
+  photo: string;
+  availableUnits: number;
+  wifi: boolean;
+  laundry: boolean;
+  rating?: number; // <-- Agregamos la propiedad opcional
+}
+
+
+en el details.component
+
+export class DetailsComponent {
+  housingLocation: HousingLocation | undefined;
+  rating = new FormControl(0, [Validators.required, Validators.min(1), Validators.max(5)]); // Campo para la puntuación
+
+  applyForm = new FormGroup({
+    firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    rating: this.rating, // Agrego el control al formulario
+  });
+
+  // Nuevo método para actualizar la puntuación
+  updateRating() {
+    if (this.housingLocation && this.rating.valid) {
+      const newRating = this.rating.value;
+      this.housingService.updateRating(this.housingLocation.id, newRating).subscribe(
+        (updatedLocation) => {
+          this.housingLocation = updatedLocation; // Actualiza la vista con la nueva puntuación
+          alert('Puntuación actualizada');
+        },
+        (error) => console.error('Error al actualizar la puntuación:', error)
+      );
+    }
+  }
+}
+
+en el html de details
+
+<section class="listing-rating">
+  <h2 class="section-heading">Rate this housing location</h2>
+
+  <input type="number" formControlName="rating" min="1" max="5" />
+  <button type="button" (click)="updateRating()" [disabled]="rating.invalid">Submit Rating</button>
+
+  <p class="listing-rating">Current rating: {{ housingLocation?.rating || 'No ratings yet' }}</p>
+</section>
+
+
+mostrala en el housing-location.component.html
+
+<p class="listing-rating">Rating: {{ housingLocation?.rating || 'No ratings yet' }}</p>
+
+
+esto en el service 
+
+ constructor(private http: HttpClient) {}
+
+  updateRating(id: number, rating: number): Observable<HousingLocation> {
+    return this.http.patch<HousingLocation>(`${this.url}/${id}`, { rating });
+  }
+
+
+
+
+si no permite el patch 
+
+updateRating(id: number, newRating: number): Observable<HousingLocation> {
+  return this.getHousingLocationById(id).pipe(
+    switchMap(housingLocation => {
+      const updatedLocation = { ...housingLocation, rating: newRating }; // Clonar y actualizar el rating
+      return this.http.put<HousingLocation>(`${this.url}/${id}`, updatedLocation);
+    })
+  );
+}
+
+
+y esto en el update del details 
+updateRating() {
+  if (this.housingLocation && this.rating.valid) {
+    const newRating = this.rating.value;
+    const oldRating = this.housingLocation.rating; // Guardamos el rating anterior
+
+    this.housingLocation.rating = newRating; // Actualizamos localmente para reflejarlo en la UI
+
+    this.housingService.updateRating(this.housingLocation.id, newRating).subscribe({
+      next: (updatedLocation) => {
+        this.housingLocation = updatedLocation; // Actualiza con la respuesta de la API
+        alert('Puntuación actualizada');
+      },
+      error: (error) => {
+        console.error('Error al actualizar la puntuación:', error);
+        this.housingLocation.rating = oldRating; // Revertimos en caso de error
+        alert('No se pudo actualizar la puntuación');
+      },
+    });
+  }
+}
