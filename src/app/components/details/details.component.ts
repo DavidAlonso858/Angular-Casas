@@ -14,16 +14,17 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 })
 
 export class DetailsComponent {
-  route: ActivatedRoute = inject(ActivatedRoute);
-  housingService = inject(HousingService);
   housingLocation: HousingLocation | undefined;
+
+  // pilla los valores puestos en cada formControlName y el formGroup
   applyForm = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     email: new FormControl('', [Validators.required, Validators.email]),
   });
 
-  constructor() {
+  constructor(private route: ActivatedRoute, private housingService: HousingService) {
+    // pillo el dato puesto abajo en el localStorage
     const savedFormData = localStorage.getItem('formData');
     if (savedFormData) {
       // le asigno esos valores al formulario directamente
@@ -37,13 +38,17 @@ export class DetailsComponent {
 
       });
     });
-    
+
   }
 
+  // se activa al darle al boton para agregarlo al localStorage
   submitApplication() {
     localStorage.removeItem('formData');
     if (this.applyForm.valid) {
       const formData = this.applyForm.value;
+      // si quiero almacenarlo en un array,
+      //  creo una interfaz con los datos del formulario 
+      // y declaro arriba una variable para hacer push aqui cada vez
 
       // Guardar los datos en LocalStorage
       localStorage.setItem('formData', JSON.stringify(formData));

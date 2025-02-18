@@ -1,1 +1,14 @@
-<p>home works!</p>
+<section>
+    <form>
+        <!--el #filter es como ponerle un atributo con lo que has escrito-->
+        <input type="text" placeholder="Filter by city" #filter>
+        <!--Aplica la funcion filtro cuando se clicka -->
+        <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
+    </form>
+</section>
+
+<section class="results">
+    <!--Importacion del otro componente recorriendo el array 
+del atributo declarado abajo por eso la directiva ngFor. Se le pasa el valor [housingLocation] al componente de ts-->
+    <app-housing-location *ngFor="let housingLocation of filteredLocationList" [housingLocation]="housingLocation" />
+</section>

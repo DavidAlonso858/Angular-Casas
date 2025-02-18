@@ -24,22 +24,26 @@
             <label for="first-name">First Name</label>
             <!--pilla el valor del formControlName en el ts-->
             <input id="first-name" type="text" formControlName="firstName" />
+            <!--Mensaje de error de la validacion-->
             <div *ngIf="applyForm.get('firstName')?.invalid && applyForm.get('firstName')?.touched" class="text-danger">
                 El nombre es requerido (minimo 2 caracteres)
             </div>
 
             <label for="last-name">Last Name</label>
             <input id="last-name" type="text" formControlName="lastName" />
+            <!--Mensaje de error de la validacion-->
             <div *ngIf="applyForm.get('lastName')?.invalid && applyForm.get('lastName')?.touched" class="text-danger">
                 El apellido es requerido (minimo 2 caracteres)
             </div>
 
             <label for="email">Email</label>
             <input id="email" type="email" formControlName="email" />
+            <!--Mensaje de error de la validacion-->
             <div *ngIf="applyForm.get('email')?.invalid && applyForm.get('email')?.touched" class="text-danger">
                 Inserte un email valido
             </div>
 
+            <!--Desabilita si es invalido-->
             <button type="submit" class="primary" [disabled]="applyForm.invalid">Apply now</button>
         </form>
 

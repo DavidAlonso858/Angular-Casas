@@ -7,33 +7,29 @@ import { HousingService } from '../../services/housing.service';
   selector: 'app-home',
   // Importacion del otro componente 
   imports: [CommonModule, HousingLocationComponent],
-  template: `
-    <section>
-      <form>
-      <input type="text" placeholder="Filter by city" #filter>
-      <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
-      </form>
-    </section>
-
-    <section class="results">
-    <!--Importacion del otro componente recorriendo el array 
-    del atributo declarado abajo por eso la directiva ngFor -->
-    <app-housing-location  *ngFor="let housingLocation of filteredLocationList" [housingLocation]="housingLocation"/>
-    </section>
-  `,
+  templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
 
 export class HomeComponent {
+  // array de la interfaz
   housingLocationList: HousingLocation[] = [];
-  housingService: HousingService = inject(HousingService);
+
+
+  // array nuevo en el que voy a filtrar
   filteredLocationList: HousingLocation[] = [];
-  constructor() {
+
+  constructor(private housingService: HousingService) {
+
+    // es lo mismo que el subscribe pero con fetch
     this.housingService.getAllHousingLocations().then((housingLocationList: HousingLocation[]) => {
       this.housingLocationList = housingLocationList;
-      this.filteredLocationList = housingLocationList;
+      this.filteredLocationList = housingLocationList; // luego en el metodo filtro
     });
+  
   }
+
+  // le paso el value del filter (texto escrito)
   filterResults(text: string) {
     if (!text) {
       this.filteredLocationList = this.housingLocationList;
