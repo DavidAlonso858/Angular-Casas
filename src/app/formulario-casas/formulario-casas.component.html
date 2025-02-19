@@ -1,0 +1,59 @@
+<button class="bg-warning" [routerLink]="['/']">Volver</button>
+
+<div class="formu-container">
+    <h2>Registrar Nueva Casa</h2>
+    <form [formGroup]="casaForm" (ngSubmit)="onSubmit()"> <!--llamo al enviar formulario-->
+        <div class="formu-apartado">
+            <label>Nombre:</label>
+            <input formControlName="name" required />
+
+            <div *ngIf="casaForm.get('name')?.invalid && casaForm.get('name')?.touched" class="text-danger">
+                el nombre de la casa es obligatorio
+            </div>
+        </div>
+
+        <div class="formu-apartado">
+            <label>Ciudad:</label>
+            <input formControlName="city" required />
+
+            <div *ngIf="casaForm.get('city')?.invalid && casaForm.get('city')?.touched" class="text-danger">
+                la ciudad de la casa es obligatorio
+            </div>
+        </div>
+
+        <div class="formu-apartado">
+            <label>State:</label>
+            <input formControlName="state" required />
+
+            <div *ngIf="casaForm.get('state')?.invalid && casaForm.get('state')?.touched" class="text-danger">
+                la ciudad de la casa es obligatorio
+            </div>
+        </div>
+        
+        <div class="formu-apartado">
+            <label>foto:</label>
+            <input formControlName="photo" />
+        </div>
+        <div class="formu-apartado">
+            <label>Unidades:</label>
+            <input type="number" formControlName="availableUnits" required />
+
+            <div *ngIf="casaForm.get('availableUnits')?.invalid && casaForm.get('availableUnits')?.touched" class="text-danger">
+                las unidades
+            </div>
+        </div>
+
+        <div class="formu-apartado">
+            <label>Seguridad:</label>
+
+            <select formControlName="sistemasSeguridad">
+                <option value="alarmas">Alarmas</option>
+                <option value="camaras">Camaras</option>
+                <option value="puertas">Puertas Reforzadas</option>
+                <option value="humo">Detectores de Humo</option>
+            </select>
+        </div>
+
+        <button type="submit">Registrar Casa</button>
+    </form>
+</div>

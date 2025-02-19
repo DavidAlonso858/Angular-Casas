@@ -1,0 +1,56 @@
+.formu-container {
+    background-color: #f9f9f9;
+    padding: 35px;
+    border: 3px solid #2c6b4f;
+    border-radius: 15px;
+    max-width: 470px;
+    margin: 40px auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.formu-container h2 {
+    color: #2c6b4f;
+    margin-bottom: 20px;
+}
+
+.formu-apartado {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #2c6b4f;
+    outline: none;
+    box-shadow: 0 0 8px rgba(44, 107, 79, 0.5);
+}
+
+button {
+    background-color: #2c6b4f;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}

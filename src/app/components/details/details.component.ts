@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HousingService } from '../../services/housing.service';
 import { HousingLocation } from '../../model/housinglocation';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { log } from 'node:console';
 
 @Component({
   selector: 'app-details',
@@ -15,7 +16,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 export class DetailsComponent {
   housingLocation: HousingLocation | undefined;
-
+  
   // pilla los valores puestos en cada formControlName y el formGroup
   applyForm = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
@@ -26,6 +27,9 @@ export class DetailsComponent {
   constructor(private route: ActivatedRoute, private housingService: HousingService) {
     // pillo el dato puesto abajo en el localStorage
     const savedFormData = localStorage.getItem('formData');
+
+    
+
     if (savedFormData) {
       // le asigno esos valores al formulario directamente
       this.applyForm.setValue(JSON.parse(savedFormData));

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HousingLocation } from '../model/housinglocation';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 // esta disponible en todos los sitiso
 @Injectable({
@@ -8,6 +10,16 @@ import { HousingLocation } from '../model/housinglocation';
 
 export class HousingService {
   url = 'http://localhost:3000/locations';
+
+  constructor(private http: HttpClient) { }
+
+  getEventos() {
+    return this.http.get<HousingLocation[]>(this.url);
+  }
+
+  addEvento(casa: HousingLocation): Observable<any> {
+    return this.http.post(this.url, casa);
+  }
 
   // define metodo asincrono que devuelve un array de ese componente
   async getAllHousingLocations(): Promise<HousingLocation[]> {
