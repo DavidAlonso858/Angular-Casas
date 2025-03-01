@@ -15,7 +15,10 @@
             <li>Does this location have laundry: {{ housingLocation?.laundry }}</li>
             <li>Tiene sistema de seguridad: {{ housingLocation?.sistemasSeguridad }}</li>
         </ul>
+        <div id="map" >
 
+            
+        </div>
     </section>
 
     <section class="listing-apply">
@@ -48,6 +51,8 @@
             <!--Desabilita si es invalido-->
             <button type="submit" class="primary" [disabled]="applyForm.invalid">Apply now</button>
         </form>
+
+   
 
     </section>
 </article>

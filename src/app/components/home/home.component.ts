@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { HousingLocationComponent } from '../housing-location/housing-location.component';
 import { HousingLocation } from '../../model/housinglocation';
 import { HousingService } from '../../services/housing.service';
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-home',
   // Importacion del otro componente 
-  imports: [CommonModule, HousingLocationComponent],
+  imports: [CommonModule, HousingLocationComponent, RouterModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })

@@ -1,11 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectorRef, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HousingService } from '../../services/housing.service';
 import { HousingLocation } from '../../model/housinglocation';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { log } from 'node:console';
-
+import { Map, tileLayer, marker } from 'leaflet';
 @Component({
   selector: 'app-details',
   standalone: true,
@@ -15,8 +14,10 @@ import { log } from 'node:console';
 })
 
 export class DetailsComponent {
-  housingLocation: HousingLocation | undefined;
-  
+  housingLocation!: HousingLocation;
+  private map: Map | null = null;
+
+
   // pilla los valores puestos en cada formControlName y el formGroup
   applyForm = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
@@ -24,11 +25,9 @@ export class DetailsComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
   });
 
-  constructor(private route: ActivatedRoute, private housingService: HousingService) {
+  constructor(private route: ActivatedRoute, private housingService: HousingService, private cdr: ChangeDetectorRef) {
     // pillo el dato puesto abajo en el localStorage
     const savedFormData = localStorage.getItem('formData');
-
-    
 
     if (savedFormData) {
       // le asigno esos valores al formulario directamente
@@ -38,12 +37,16 @@ export class DetailsComponent {
     this.route.paramMap.subscribe(params => {
       const housingLocationId = Number(params.get('id'));
       this.housingService.getHousingLocationById(housingLocationId).then((housingLocation) => {
-        this.housingLocation = housingLocation;
+        this.housingLocation = housingLocation!;
+        this.cdr.detectChanges()
+        this.mostrarMapas()
 
       });
     });
 
   }
+
+
 
   // se activa al darle al boton para agregarlo al localStorage
   submitApplication() {
@@ -68,4 +71,30 @@ export class DetailsComponent {
     }
   }
 
-}
+
+  // MOSTRAR MAPA
+  async mostrarMapas(): Promise<void> {
+      if (this.housingLocation?.coordinates) {
+        const { Map, tileLayer, marker } = await import('leaflet');
+        if (this.map) {
+          this.map.remove();
+          this.map = null;
+        }
+
+        this.map = new Map('map').setView(
+          [this.housingLocation.coordinates.latitude, this.housingLocation.coordinates.longitude],
+          13
+        );
+
+        tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(this.map);
+
+        marker([this.housingLocation.coordinates.latitude, this.housingLocation.coordinates.longitude])
+          .addTo(this.map)
+          .bindPopup('Ubicación de la Vivienda')
+          .openPopup();
+      }
+    }
+  }
